@@ -8,7 +8,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { ProfileSettings } from "@/components/settings/profile-settings"
 import { NotificationSettings } from "@/components/settings/notification-settings"
 import { SecuritySettings } from "@/components/settings/security-settings"
 import { AppearanceSettings } from "@/components/settings/appearance-settings"
@@ -22,24 +21,12 @@ export default function SettingsPage() {
 
             <Card>
                 <CardContent className="p-6">
-                    <Tabs defaultValue="profile" className="space-y-4">
-                        <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="profile">Profil</TabsTrigger>
+                    <Tabs defaultValue="notifications" className="space-y-4">
+                        <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="notifications">Bildirimler</TabsTrigger>
                             <TabsTrigger value="security">Güvenlik</TabsTrigger>
                             <TabsTrigger value="appearance">Görünüm</TabsTrigger>
                         </TabsList>
-                        <TabsContent value="profile" className="space-y-4">
-                            <div>
-                                <h2 className="text-xl font-semibold tracking-tight">
-                                    Profil Ayarları
-                                </h2>
-                                <p className="text-sm text-muted-foreground">
-                                    Profil bilgilerinizi yönetin.
-                                </p>
-                            </div>
-                            <ProfileSettings />
-                        </TabsContent>
                         <TabsContent value="notifications" className="space-y-4">
                             <div>
                                 <h2 className="text-xl font-semibold tracking-tight">

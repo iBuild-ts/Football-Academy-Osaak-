@@ -13,18 +13,45 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, Menu, Search, Settings, PanelLeft, Sun, Moon } from "lucide-react"
+import { Bell, Menu, Search, Settings, PanelLeft, Sun, Moon, LogOut, User, Shield } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Shortcuts } from "@/components/dashboard/shortcuts"
 import { useState, useEffect } from "react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
-import { UserNav } from "@/components/dashboard/user-nav"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface DashboardNavProps {
     isCollapsed: boolean;
     onCollapsedChange: (collapsed: boolean) => void;
 }
+
+const notifications = [
+    {
+        title: "Yeni Antrenman",
+        description: "U15 takımı için yeni antrenman programı eklendi",
+        time: "5 dakika önce",
+        unread: true,
+    },
+    {
+        title: "Performans Raporu",
+        description: "Ahmet Yılmaz'ın performans raporu güncellendi",
+        time: "1 saat önce",
+        unread: true,
+    },
+    {
+        title: "Turnuva Hatırlatması",
+        description: "U17 turnuvası yarın başlıyor",
+        time: "3 saat önce",
+        unread: false,
+    },
+    {
+        title: "Yeni Mesaj",
+        description: "Veli toplantısı hakkında yeni mesajınız var",
+        time: "5 saat önce",
+        unread: false,
+    },
+]
 
 export function DashboardNav({ isCollapsed, onCollapsedChange }: DashboardNavProps) {
     const [shortcutsOpen, setShortcutsOpen] = useState(false)
@@ -90,17 +117,107 @@ export function DashboardNav({ isCollapsed, onCollapsedChange }: DashboardNavPro
                         </Button>
                     )}
 
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="relative h-8 w-8"
-                        aria-label="Notifications"
-                    >
-                        <Bell className="h-3.5 w-3.5" />
-                        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="relative h-8 w-8"
+                                aria-label="Notifications"
+                            >
+                                <Bell className="h-4 w-4" />
+                                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[380px]">
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    <p className="text-sm font-medium leading-none">Bildirimler</p>
+                                    <p className="text-xs leading-none text-muted-foreground">
+                                        Son bildirimleriniz burada görüntülenir
+                                    </p>
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <ScrollArea className="h-[300px]">
+                                {notifications.map((notification, index) => (
+                                    <DropdownMenuItem key={index} className="cursor-pointer">
+                                        <div className="flex flex-col space-y-1">
+                                            <div className="flex items-center gap-2">
+                                                <p className="text-sm font-medium leading-none">
+                                                    {notification.title}
+                                                </p>
+                                                {notification.unread && (
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">
+                                                {notification.description}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {notification.time}
+                                            </p>
+                                        </div>
+                                    </DropdownMenuItem>
+                                ))}
+                            </ScrollArea>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="cursor-pointer justify-center" asChild>
+                                <Link href="/dashboard/notifications">
+                                    Tüm bildirimleri görüntüle
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
 
-                    <UserNav />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="relative h-8 w-8" size="icon">
+                                <Avatar className="h-8 w-8">
+                                    <AvatarImage src="/avatars/01.png" alt="Profil" />
+                                    <AvatarFallback>FA</AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end" forceMount>
+                            <DropdownMenuLabel className="font-normal">
+                                <div className="flex flex-col space-y-1">
+                                    <p className="text-sm font-medium leading-none">Fatih Terim</p>
+                                    <p className="text-xs leading-none text-muted-foreground">
+                                        fatih@example.com
+                                    </p>
+                                </div>
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem className="cursor-pointer" asChild>
+                                    <Link href="/dashboard/profile">
+                                        <User className="mr-2 h-4 w-4" />
+                                        <span>Profil</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" asChild>
+                                    <Link href="/dashboard/settings">
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        <span>Ayarlar</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" asChild>
+                                    <Link href="/dashboard/security">
+                                        <Shield className="mr-2 h-4 w-4" />
+                                        <span>Güvenlik</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="cursor-pointer text-red-600" asChild>
+                                <Link href="/auth/login">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Çıkış Yap</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
             <Shortcuts open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
