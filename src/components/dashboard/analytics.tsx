@@ -1,204 +1,161 @@
 "use client"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Overview } from "@/components/dashboard/overview"
+import { BarChart3, TrendingUp, Users, UserPlus, Trophy, Calendar } from "lucide-react"
+import { AgeDistribution } from "@/components/analytics/age-distribution"
+import { PositionDistribution } from "@/components/analytics/position-distribution"
+import { ActivityTimeline } from "@/components/analytics/activity-timeline"
+import { TeamPerformance } from "@/components/analytics/team-performance"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Activity, TrendingUp, Users, Calendar } from "lucide-react"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-const performanceData = [
-    { month: "Ocak", performans: 65 },
-    { month: "Şubat", performans: 70 },
-    { month: "Mart", performans: 75 },
-    { month: "Nisan", performans: 72 },
-    { month: "Mayıs", performans: 80 },
-    { month: "Haziran", performans: 85 },
-]
-
-const detailedStats = [
+const stats = [
     {
-        title: "Antrenman İstatistikleri",
-        icon: Activity,
-        stats: [
-            { label: "Toplam Antrenman", value: "156 saat" },
-            { label: "Haftalık Ortalama", value: "12 saat" },
-            { label: "Katılım Oranı", value: "%92" },
-        ]
-    },
-    {
-        title: "Performans Metrikleri",
-        icon: TrendingUp,
-        stats: [
-            { label: "Fiziksel Gelişim", value: "%85" },
-            { label: "Teknik Gelişim", value: "%78" },
-            { label: "Taktiksel Anlayış", value: "%82" },
-        ]
-    },
-    {
-        title: "Takım İstatistikleri",
+        title: "Toplam Oyuncu",
+        value: "127",
+        change: "+5.2%",
+        description: "Geçen aya göre",
         icon: Users,
-        stats: [
-            { label: "Oyuncu Sayısı", value: "25" },
-            { label: "Ortalama Yaş", value: "17.5" },
-            { label: "Kadro Kullanımı", value: "%85" },
-        ]
+    },
+    {
+        title: "Yeni Kayıtlar",
+        value: "24",
+        change: "+12%",
+        description: "Bu ay",
+        icon: UserPlus,
+    },
+    {
+        title: "Turnuva Başarısı",
+        value: "85%",
+        change: "+3.1%",
+        description: "Son turnuvada",
+        icon: Trophy,
+    },
+    {
+        title: "Antrenman Katılımı",
+        value: "92%",
+        change: "-1.2%",
+        description: "Bu hafta",
+        icon: Calendar,
     },
 ]
 
 const recentActivities = [
     {
         date: "2024-02-20",
-        activity: "Taktik Antrenmanı",
+        activity: "U15 Antrenmanı",
         duration: "2 saat",
-        attendance: "23/25",
-        performance: "İyi"
+        attendance: "18/20",
+        performance: "8.5/10"
     },
     {
         date: "2024-02-19",
-        activity: "Kondisyon Çalışması",
-        duration: "1.5 saat",
-        attendance: "24/25",
-        performance: "Çok İyi"
+        activity: "U17 Turnuvası",
+        duration: "4 saat",
+        attendance: "22/22",
+        performance: "9/10"
     },
     {
         date: "2024-02-18",
-        activity: "Teknik Antrenman",
-        duration: "2 saat",
-        attendance: "22/25",
-        performance: "Orta"
-    },
-    {
-        date: "2024-02-17",
-        activity: "Maç Analizi",
-        duration: "1 saat",
-        attendance: "25/25",
-        performance: "İyi"
-    },
-    {
-        date: "2024-02-16",
-        activity: "Fiziksel Test",
-        duration: "3 saat",
-        attendance: "25/25",
-        performance: "Çok İyi"
-    },
+        activity: "U19 Taktik Çalışması",
+        duration: "1.5 saat",
+        attendance: "19/20",
+        performance: "8/10"
+    }
 ]
 
 export function Analytics() {
     return (
-        <Tabs defaultValue="overview" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-[400px] grid-cols-2">
                 <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
                 <TabsTrigger value="details">Detaylar</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-4">
+            <TabsContent value="overview" className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Toplam Antrenman
-                            </CardTitle>
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">156 Saat</div>
-                            <p className="text-xs text-muted-foreground">
-                                +2% geçen aya göre
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Ortalama Performans
-                            </CardTitle>
-                            <Activity className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">%82</div>
-                            <p className="text-xs text-muted-foreground">
-                                +5% geçen aya göre
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Katılım Oranı
-                            </CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">%92</div>
-                            <p className="text-xs text-muted-foreground">
-                                +1% geçen aya göre
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Gelişim Oranı
-                            </CardTitle>
-                            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">%78</div>
-                            <p className="text-xs text-muted-foreground">
-                                +2.5% geçen aya göre
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Performans Grafiği</CardTitle>
-                    </CardHeader>
-                    <CardContent className="pl-2">
-                        <ResponsiveContainer width="100%" height={350}>
-                            <LineChart data={performanceData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="month" />
-                                <YAxis />
-                                <Tooltip />
-                                <Line type="monotone" dataKey="performans" stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            </TabsContent>
-
-            <TabsContent value="details" className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {detailedStats.map((section, index) => (
+                    {stats.map((stat, index) => (
                         <Card key={index}>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-lg font-medium">
-                                    {section.title}
+                                <CardTitle className="text-sm font-medium text-muted-foreground">
+                                    {stat.title}
                                 </CardTitle>
-                                <section.icon className="h-4 w-4 text-muted-foreground" />
+                                <stat.icon className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-4">
-                                    {section.stats.map((stat, statIndex) => (
-                                        <div key={statIndex} className="flex items-center justify-between">
-                                            <span className="text-sm text-muted-foreground">{stat.label}</span>
-                                            <span className="font-medium">{stat.value}</span>
-                                        </div>
-                                    ))}
+                                <div className="text-2xl font-bold">{stat.value}</div>
+                                <div className="flex items-center text-xs text-muted-foreground">
+                                    <span className={stat.change.startsWith("+") ? "text-green-500" : "text-red-500"}>
+                                        {stat.change}
+                                    </span>
+                                    <span className="ml-1">{stat.description}</span>
                                 </div>
                             </CardContent>
                         </Card>
                     ))}
                 </div>
 
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                    <Card className="col-span-4">
+                        <CardHeader>
+                            <CardTitle>Performans Trendi</CardTitle>
+                            <CardDescription>
+                                Son 6 ayın performans analizi
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Overview />
+                        </CardContent>
+                    </Card>
+
+                    <Card className="col-span-3">
+                        <CardHeader>
+                            <CardTitle>Yaş Dağılımı</CardTitle>
+                            <CardDescription>
+                                Oyuncuların yaş gruplarına göre dağılımı
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <AgeDistribution />
+                        </CardContent>
+                    </Card>
+                </div>
+            </TabsContent>
+
+            <TabsContent value="details" className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Pozisyon Dağılımı</CardTitle>
+                            <CardDescription>
+                                Oyuncuların pozisyonlara göre dağılımı
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <PositionDistribution />
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Takım Performansı</CardTitle>
+                            <CardDescription>
+                                Takımların son performans değerlendirmesi
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <TeamPerformance />
+                        </CardContent>
+                    </Card>
+                </div>
+
                 <Card>
                     <CardHeader>
                         <CardTitle>Son Aktiviteler</CardTitle>
                         <CardDescription>
-                            Son 5 antrenman ve aktivite detayları
+                            Son antrenman ve turnuvaların detaylı raporu
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
