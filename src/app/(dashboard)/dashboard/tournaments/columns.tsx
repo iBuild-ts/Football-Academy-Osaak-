@@ -6,13 +6,21 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "@/components/datatable/data-table-column-header"
 import { DataTableRowActions } from "@/components/datatable/data-table-row-actions"
 
+// Örnek takım listesi - Bu veri API'den gelecek
+const availableTeams = [
+    "U13 Takımı",
+    "U15 Takımı",
+    "U17 Takımı",
+    "U19 Takımı"
+]
+
 export type Tournament = {
     id: string
     name: string
     startDate: string
     endDate: string
     location: string
-    teams: number
+    teams: string[]
     status: "active" | "inactive" | "completed"
 }
 
@@ -50,27 +58,21 @@ export const columns: ColumnDef<Tournament>[] = [
     {
         accessorKey: "startDate",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Başlangıç" />
+            <DataTableColumnHeader column={column} title="Başlangıç Tarihi" />
         ),
         cell: ({ row }) => {
             const date = new Date(row.getValue("startDate"))
-            const formatted = new Intl.DateTimeFormat("tr-TR", {
-                dateStyle: "medium",
-            }).format(date)
-            return <div>{formatted}</div>
+            return date.toLocaleDateString("tr-TR")
         },
     },
     {
         accessorKey: "endDate",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Bitiş" />
+            <DataTableColumnHeader column={column} title="Bitiş Tarihi" />
         ),
         cell: ({ row }) => {
             const date = new Date(row.getValue("endDate"))
-            const formatted = new Intl.DateTimeFormat("tr-TR", {
-                dateStyle: "medium",
-            }).format(date)
-            return <div>{formatted}</div>
+            return date.toLocaleDateString("tr-TR")
         },
     },
     {
@@ -82,8 +84,16 @@ export const columns: ColumnDef<Tournament>[] = [
     {
         accessorKey: "teams",
         header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Takım Sayısı" />
+            <DataTableColumnHeader column={column} title="Takımlar" />
         ),
+        cell: ({ row }) => {
+            const teams = row.getValue("teams") as string[]
+            return (
+                <Badge variant="outline">
+                    {teams.length} takım
+                </Badge>
+            )
+        },
     },
     {
         accessorKey: "status",
@@ -92,12 +102,21 @@ export const columns: ColumnDef<Tournament>[] = [
         ),
         cell: ({ row }) => {
             const status = row.getValue("status") as string
-            const label = status === "active" ? "Aktif" : status === "inactive" ? "Pasif" : "Tamamlandı"
-            const variant = status === "active" ? "default" : status === "inactive" ? "destructive" : "secondary"
-
             return (
-                <Badge variant={variant}>
-                    {label}
+                <Badge
+                    variant={
+                        status === "active"
+                            ? "default"
+                            : status === "completed"
+                                ? "secondary"
+                                : "destructive"
+                    }
+                >
+                    {status === "active"
+                        ? "Aktif"
+                        : status === "completed"
+                            ? "Tamamlandı"
+                            : "Pasif"}
                 </Badge>
             )
         },

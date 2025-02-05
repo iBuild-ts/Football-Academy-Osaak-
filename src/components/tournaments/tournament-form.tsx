@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Team } from "@/app/(dashboard)/dashboard/teams/columns"
+import { Tournament } from "@/app/(dashboard)/dashboard/tournaments/columns"
 import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -15,41 +15,41 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Search, X } from "lucide-react"
 import { useState } from "react"
 
-// Örnek oyuncu listesi - Bu veri API'den gelecek
-const availablePlayers = [
-    "Ali Yılmaz",
-    "Mehmet Kaya",
-    "Ayşe Demir",
-    "Zeynep Şahin",
-    "Can Öztürk",
-    "Burak Aydın",
-    "Elif Yıldız",
+// Örnek takım listesi - Bu veri API'den gelecek
+const availableTeams = [
+    "U13 Takımı",
+    "U15 Takımı",
+    "U17 Takımı",
+    "U19 Takımı"
 ]
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Takım adı en az 2 karakter olmalıdır.",
+        message: "Turnuva adı en az 2 karakter olmalıdır.",
     }),
-    category: z.string().min(2, {
-        message: "Kategori seçiniz.",
+    startDate: z.string({
+        required_error: "Başlangıç tarihi seçiniz.",
     }),
-    coach: z.string().min(2, {
-        message: "Antrenör seçiniz.",
+    endDate: z.string({
+        required_error: "Bitiş tarihi seçiniz.",
     }),
-    players: z.array(z.string()).min(1, {
-        message: "En az bir oyuncu seçilmelidir.",
+    location: z.string().min(2, {
+        message: "Konum giriniz.",
     }),
-    status: z.enum(["active", "inactive"], {
+    teams: z.array(z.string()).min(1, {
+        message: "En az bir takım seçilmelidir.",
+    }),
+    status: z.enum(["active", "inactive", "completed"], {
         required_error: "Lütfen bir durum seçiniz.",
     }),
 })
 
-interface TeamFormProps {
-    initialData?: Team
+interface TournamentFormProps {
+    initialData?: Tournament
     onSubmit: (data: z.infer<typeof formSchema>) => void
 }
 
-export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
+export function TournamentForm({ initialData, onSubmit }: TournamentFormProps) {
     const router = useRouter()
     const [searchQuery, setSearchQuery] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
@@ -59,36 +59,37 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: initialData?.name ?? "",
-            category: initialData?.category ?? "",
-            coach: initialData?.coach ?? "",
-            players: initialData?.players ?? [],
+            startDate: initialData?.startDate ?? "",
+            endDate: initialData?.endDate ?? "",
+            location: initialData?.location ?? "",
+            teams: initialData?.teams ?? [],
             status: initialData?.status ?? "active",
         },
     })
 
-    const selectedPlayers = form.watch("players")
+    const selectedTeams = form.watch("teams")
 
-    const filteredPlayers = availablePlayers.filter(player =>
-        player.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !selectedPlayers.includes(player)
+    const filteredTeams = availableTeams.filter(team =>
+        team.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !selectedTeams.includes(team)
     )
 
-    const totalPages = Math.ceil(filteredPlayers.length / itemsPerPage)
-    const currentPlayers = filteredPlayers.slice(
+    const totalPages = Math.ceil(filteredTeams.length / itemsPerPage)
+    const currentTeams = filteredTeams.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     )
 
-    const handlePlayerSelect = (player: string) => {
-        const currentPlayers = form.getValues("players")
-        if (!currentPlayers.includes(player)) {
-            form.setValue("players", [...currentPlayers, player])
+    const handleTeamSelect = (team: string) => {
+        const currentTeams = form.getValues("teams")
+        if (!currentTeams.includes(team)) {
+            form.setValue("teams", [...currentTeams, team])
         }
     }
 
-    const handlePlayerRemove = (player: string) => {
-        const currentPlayers = form.getValues("players")
-        form.setValue("players", currentPlayers.filter(p => p !== player))
+    const handleTeamRemove = (team: string) => {
+        const currentTeams = form.getValues("teams")
+        form.setValue("teams", currentTeams.filter(t => t !== team))
     }
 
     return (
@@ -99,9 +100,53 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Takım Adı</FormLabel>
+                            <FormLabel>Turnuva Adı</FormLabel>
                             <FormControl>
-                                <Input placeholder="U15 Takımı" {...field} />
+                                <Input placeholder="U15 Yaz Turnuvası" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Başlangıç Tarihi</FormLabel>
+                                <FormControl>
+                                    <Input type="date" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Bitiş Tarihi</FormLabel>
+                                <FormControl>
+                                    <Input type="date" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Konum</FormLabel>
+                            <FormControl>
+                                <Input placeholder="İstanbul" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -110,73 +155,26 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
 
                 <FormField
                     control={form.control}
-                    name="category"
+                    name="teams"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Kategori</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Kategori seçin" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="U13">U13</SelectItem>
-                                    <SelectItem value="U15">U15</SelectItem>
-                                    <SelectItem value="U17">U17</SelectItem>
-                                    <SelectItem value="U19">U19</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="coach"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Antrenör</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Antrenör seçin" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="Fatih Terim">Fatih Terim</SelectItem>
-                                    <SelectItem value="Şenol Güneş">Şenol Güneş</SelectItem>
-                                    <SelectItem value="Abdullah Avcı">Abdullah Avcı</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="players"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Oyuncular</FormLabel>
+                            <FormLabel>Takımlar</FormLabel>
                             <Card className="p-4">
                                 <div className="space-y-4">
                                     <div className="flex flex-wrap gap-2">
-                                        {field.value.map((player) => (
+                                        {field.value.map((team) => (
                                             <Badge
-                                                key={player}
+                                                key={team}
                                                 variant="default"
                                                 className="gap-1 pr-0.5"
                                             >
-                                                <span className="text-xs">{player}</span>
+                                                <span className="text-xs">{team}</span>
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
                                                     size="icon"
                                                     className="h-4 w-4 hover:bg-transparent"
-                                                    onClick={() => handlePlayerRemove(player)}
+                                                    onClick={() => handleTeamRemove(team)}
                                                 >
                                                     <X className="h-3 w-3" />
                                                 </Button>
@@ -186,7 +184,7 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
                                     <div className="flex items-center gap-2">
                                         <Search className="h-4 w-4 text-muted-foreground" />
                                         <Input
-                                            placeholder="Oyuncu ara..."
+                                            placeholder="Takım ara..."
                                             value={searchQuery}
                                             onChange={(e) => {
                                                 setSearchQuery(e.target.value)
@@ -197,14 +195,14 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
                                     </div>
                                     <ScrollArea className="h-[120px]">
                                         <div className="space-y-2">
-                                            {currentPlayers.map((player) => (
+                                            {currentTeams.map((team) => (
                                                 <Button
-                                                    key={player}
+                                                    key={team}
                                                     variant="ghost"
                                                     className="w-full justify-start font-normal"
-                                                    onClick={() => handlePlayerSelect(player)}
+                                                    onClick={() => handleTeamSelect(team)}
                                                 >
-                                                    {player}
+                                                    {team}
                                                 </Button>
                                             ))}
                                         </div>
@@ -254,6 +252,7 @@ export function TeamForm({ initialData, onSubmit }: TeamFormProps) {
                                 <SelectContent>
                                     <SelectItem value="active">Aktif</SelectItem>
                                     <SelectItem value="inactive">Pasif</SelectItem>
+                                    <SelectItem value="completed">Tamamlandı</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />

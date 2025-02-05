@@ -8,11 +8,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Plus } from "lucide-react"
-import { columns } from "./columns"
+import { PlusCircle } from "lucide-react"
+import { columns, Tournament } from "./columns"
 import { DataTable } from "@/components/datatable/data-table"
-import { Tournament } from "./columns"
+import { useRouter } from "next/navigation"
 
+// Örnek turnuva verileri - Bu veriler API'den gelecek
 const tournaments: Tournament[] = [
     {
         id: "1",
@@ -20,17 +21,17 @@ const tournaments: Tournament[] = [
         startDate: "2024-06-01",
         endDate: "2024-06-15",
         location: "İstanbul",
-        teams: 8,
-        status: "active"
+        teams: ["U15 Takımı", "U17 Takımı"],
+        status: "active",
     },
     {
         id: "2",
-        name: "U17 Kış Kupası",
+        name: "U17 Kış Turnuvası",
         startDate: "2024-12-01",
         endDate: "2024-12-15",
         location: "Ankara",
-        teams: 12,
-        status: "inactive"
+        teams: ["U15 Takımı", "U17 Takımı", "U19 Takımı"],
+        status: "inactive",
     },
     {
         id: "3",
@@ -38,18 +39,20 @@ const tournaments: Tournament[] = [
         startDate: "2024-03-01",
         endDate: "2024-03-15",
         location: "İzmir",
-        teams: 16,
-        status: "completed"
+        teams: ["U17 Takımı", "U19 Takımı"],
+        status: "completed",
     },
 ]
 
 export default function TournamentsPage() {
+    const router = useRouter()
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Turnuvalar</h1>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
+                <Button onClick={() => router.push("/dashboard/tournaments/new")}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
                     Yeni Turnuva
                 </Button>
             </div>
@@ -58,7 +61,7 @@ export default function TournamentsPage() {
                 <CardHeader>
                     <CardTitle>Tüm Turnuvalar</CardTitle>
                     <CardDescription>
-                        Akademinin düzenlediği tüm turnuvaların listesi.
+                        Akademideki tüm turnuvaların listesi.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

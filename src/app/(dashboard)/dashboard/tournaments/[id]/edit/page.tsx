@@ -1,45 +1,46 @@
 "use client"
 
-import { TeamForm } from "@/components/teams/team-form"
+import { TournamentForm } from "@/components/tournaments/tournament-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
 import { use } from "react"
 
-interface EditTeamPageProps {
+interface EditTournamentPageProps {
     params: Promise<{
         id: string
     }>
 }
 
-export default function EditTeamPage({ params }: EditTeamPageProps) {
+export default function EditTournamentPage({ params }: EditTournamentPageProps) {
     const router = useRouter()
     const { id } = use(params)
 
-    // Örnek takım verisi - Bu veri API'den gelecek
-    const teamData = {
+    // Örnek turnuva verisi - Bu veri API'den gelecek
+    const mockTournament = {
         id: id,
-        name: "U15 Takımı",
-        category: "U15",
-        coach: "Fatih Terim",
-        players: ["Ali Yılmaz", "Mehmet Kaya"],
+        name: "U15 Yaz Turnuvası",
+        startDate: "2024-06-01",
+        endDate: "2024-06-15",
+        location: "İstanbul",
+        teams: ["U15 Takımı", "U17 Takımı"],
         status: "active" as const,
     }
 
     const onSubmit = async (data: any) => {
         try {
             // Burada API çağrısı yapılacak
-            console.log("Güncellenecek takım verileri:", { id, ...data })
+            console.log("Güncellenecek turnuva verileri:", { id, ...data })
             toast({
                 title: "Başarılı!",
-                description: "Takım başarıyla güncellendi.",
+                description: "Turnuva başarıyla güncellendi.",
             })
-            router.push("/dashboard/teams")
+            router.push("/dashboard/tournaments")
             router.refresh()
         } catch (error) {
             toast({
                 title: "Hata!",
-                description: "Takım güncellenirken bir hata oluştu.",
+                description: "Turnuva güncellenirken bir hata oluştu.",
                 variant: "destructive",
             })
         }
@@ -48,18 +49,21 @@ export default function EditTeamPage({ params }: EditTeamPageProps) {
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Takım Düzenle</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Turnuva Düzenle</h1>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Takım Bilgileri</CardTitle>
+                    <CardTitle>Turnuva Bilgileri</CardTitle>
                     <CardDescription>
-                        Takım bilgilerini güncellemek için formu düzenleyin.
+                        Turnuva bilgilerini güncellemek için formu düzenleyin.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <TeamForm initialData={teamData} onSubmit={onSubmit} />
+                    <TournamentForm
+                        initialData={mockTournament}
+                        onSubmit={onSubmit}
+                    />
                 </CardContent>
             </Card>
         </div>
