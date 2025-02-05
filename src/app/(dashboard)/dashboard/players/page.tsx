@@ -12,6 +12,7 @@ import { Plus } from "lucide-react"
 import { columns } from "./columns"
 import { DataTable } from "@/components/datatable/data-table"
 import { Player } from "./columns"
+import { useRouter } from "next/navigation"
 
 const players: Player[] = [
     {
@@ -44,11 +45,13 @@ const players: Player[] = [
 ]
 
 export default function PlayersPage() {
+    const router = useRouter()
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Oyuncular</h1>
-                <Button>
+                <Button onClick={() => router.push("/dashboard/players/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Yeni Oyuncu
                 </Button>
