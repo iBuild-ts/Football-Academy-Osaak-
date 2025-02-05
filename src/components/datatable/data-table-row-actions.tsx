@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Edit, Copy, Trash } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
 
 interface DataTableRowActionsProps<TData> {
@@ -22,7 +22,11 @@ export function DataTableRowActions<TData>({
     row,
 }: DataTableRowActionsProps<TData>) {
     const router = useRouter()
+    const pathname = usePathname()
     const data = row.original as any
+
+    // URL'den entity type'ı al (players, coaches, parents)
+    const entityType = pathname.split("/").filter(Boolean)[1]
 
     const onCopy = async () => {
         try {
@@ -74,7 +78,7 @@ export function DataTableRowActions<TData>({
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[160px]">
-                <DropdownMenuItem onClick={() => router.push(`/dashboard/players/${data.id}/edit`)}>
+                <DropdownMenuItem onClick={() => router.push(`/dashboard/${entityType}/${data.id}/edit`)}>
                     <Edit className="mr-2 h-4 w-4" />
                     Düzenle
                 </DropdownMenuItem>

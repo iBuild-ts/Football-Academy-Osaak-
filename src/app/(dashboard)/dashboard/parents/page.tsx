@@ -12,6 +12,7 @@ import { Plus } from "lucide-react"
 import { columns } from "./columns"
 import { DataTable } from "@/components/datatable/data-table"
 import { Parent } from "./columns"
+import { useRouter } from "next/navigation"
 
 const parents: Parent[] = [
     {
@@ -41,11 +42,13 @@ const parents: Parent[] = [
 ]
 
 export default function ParentsPage() {
+    const router = useRouter()
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight">Veliler</h1>
-                <Button>
+                <Button onClick={() => router.push("/dashboard/parents/new")}>
                     <Plus className="mr-2 h-4 w-4" />
                     Yeni Veli
                 </Button>
