@@ -19,6 +19,13 @@ import { useEffect } from "react"
 export function UserNav() {
     const router = useRouter()
 
+    const handleLogout = () => {
+        // Clear any user session/token here
+        localStorage.removeItem('userToken')
+        // Redirect to login page
+        router.push('/auth/login')
+    }
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.shiftKey && e.key === "P") {
@@ -35,7 +42,7 @@ export function UserNav() {
             }
             if (e.ctrlKey && e.shiftKey && e.key === "Q") {
                 e.preventDefault()
-                router.push("/")
+                handleLogout()
             }
         }
 
@@ -49,16 +56,16 @@ export function UserNav() {
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                         <AvatarImage src="/avatars/01.png" alt="@example" />
-                        <AvatarFallback>BA</AvatarFallback>
+                        <AvatarFallback>OS</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">John Doe</p>
+                        <p className="text-sm font-medium leading-none">OSAAK Admin</p>
                         <p className="text-xs leading-none text-muted-foreground">
-                            john@example.com
+                            admin@osaakfc.com
                         </p>
                     </div>
                 </DropdownMenuLabel>
@@ -70,7 +77,7 @@ export function UserNav() {
                     >
                         <div className="flex items-center flex-1">
                             <User className="mr-2 h-4 w-4" />
-                            <span>Profil</span>
+                            <span>Profile</span>
                         </div>
                         <DropdownMenuShortcut>⇧P</DropdownMenuShortcut>
                     </DropdownMenuItem>
@@ -80,7 +87,7 @@ export function UserNav() {
                     >
                         <div className="flex items-center flex-1">
                             <Settings className="mr-2 h-4 w-4" />
-                            <span>Ayarlar</span>
+                            <span>Settings</span>
                         </div>
                         <DropdownMenuShortcut>⌘⇧S</DropdownMenuShortcut>
                     </DropdownMenuItem>
@@ -90,16 +97,19 @@ export function UserNav() {
                     >
                         <div className="flex items-center flex-1">
                             <Shield className="mr-2 h-4 w-4" />
-                            <span>Güvenlik</span>
+                            <span>Security</span>
                         </div>
                         <DropdownMenuShortcut>⇧S</DropdownMenuShortcut>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem 
+                    className="cursor-pointer"
+                    onClick={handleLogout}
+                >
                     <div className="flex items-center flex-1">
                         <LogOut className="mr-2 h-4 w-4" />
-                        <span>Çıkış Yap</span>
+                        <span>Logout</span>
                     </div>
                     <DropdownMenuShortcut>⌘⇧Q</DropdownMenuShortcut>
                 </DropdownMenuItem>

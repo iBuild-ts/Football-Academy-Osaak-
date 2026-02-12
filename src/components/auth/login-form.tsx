@@ -8,17 +8,22 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
+import { useState } from "react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 const formSchema = z.object({
     email: z.string().email({
-        message: "Geçerli bir e-posta adresi giriniz.",
+        message: "Please enter a valid email address.",
     }),
     password: z.string().min(6, {
-        message: "Şifre en az 6 karakter olmalıdır.",
+        message: "Password must be at least 6 characters.",
     }),
 })
 
 export function LoginForm() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -27,14 +32,40 @@ export function LoginForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        setIsLoading(true)
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        console.log("Login attempt:", values)
+        
+        // For demo purposes, show success and redirect
+        alert(`Welcome to OSAAK FC! Login successful for ${values.email}`)
+        
+        // Set loading to false before redirect
+        setIsLoading(false)
+        
+        // Redirect to dashboard or homepage after successful login
+        // You can change this to whatever route you want
+        window.location.href = "/dashboard" // or "/" for homepage
+    }
+
+    const handleGoogleLogin = () => {
+        console.log("Google login initiated")
+        // Implement Google OAuth logic here
+        alert("Google login coming soon!")
     }
 
     return (
         <div className="space-y-6">
-            <Button variant="outline" className="w-full relative" onClick={() => console.log("Google login")}>
-                <svg className="mr-2 h-4 w-4 text-muted-foreground" viewBox="0 0 24 24">
+            <Button 
+                variant="outline" 
+                className="w-full relative hover:bg-green-50 hover:border-green-800 hover:text-green-800 transition-all duration-300" 
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+            >
+                <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                         fill="currentColor"
@@ -52,7 +83,7 @@ export function LoginForm() {
                         fill="currentColor"
                     />
                 </svg>
-                <span className="text-muted-foreground">Google ile Giriş Yap</span>
+                <span>Continue with Google</span>
             </Button>
             <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -60,7 +91,7 @@ export function LoginForm() {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-background px-2 text-muted-foreground">
-                        veya e-posta ile devam et
+                        or continue with email
                     </span>
                 </div>
             </div>
@@ -71,9 +102,13 @@ export function LoginForm() {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>E-posta</FormLabel>
+                                <FormLabel>Email</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="ornek@mail.com" {...field} />
+                                    <Input 
+                                        placeholder="player@osaakfc.com" 
+                                        {...field} 
+                                        className="focus:border-green-800 focus:ring-green-800"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -84,22 +119,56 @@ export function LoginForm() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Şifre</FormLabel>
+                                <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                    <Input type="password" placeholder="******" {...field} />
+                                    <div className="relative">
+                                        <Input 
+                                            type={showPassword ? "text" : "password"} 
+                                            placeholder="Enter your password" 
+                                            {...field}
+                                            className="focus:border-green-800 focus:ring-green-800 pr-10"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4" />
+                                            ) : (
+                                                <Eye className="h-4 w-4" />
+                                            )}
+                                        </Button>
+                                    </div>
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <div className="flex flex-col gap-4">
-                        <Button type="submit" className="w-full">
-                            Giriş Yap
+                        <Button 
+                            type="submit" 
+                            className="w-full bg-green-800 hover:bg-green-900 transition-all duration-300"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Signing in...
+                                </>
+                            ) : (
+                                "Sign In to OSAAK FC"
+                            )}
                         </Button>
                         <div className="text-sm text-center text-muted-foreground">
-                            Hesabınız yok mu?{" "}
-                            <Link href="/auth/register" className="text-primary hover:underline">
-                                Kayıt Ol
+                            Don't have an account?{" "}
+                            <Link 
+                                href="/auth/register" 
+                                className="text-green-800 hover:text-green-900 hover:underline font-medium transition-colors duration-200"
+                            >
+                                Join OSAAK FC
                             </Link>
                         </div>
                     </div>

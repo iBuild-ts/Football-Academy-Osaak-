@@ -22,7 +22,7 @@ interface SidebarProps {
 
 const routes = [
     {
-        group: "Genel",
+        group: "General",
         items: [
             {
                 label: "Dashboard",
@@ -32,55 +32,55 @@ const routes = [
         ]
     },
     {
-        group: "Üyeler",
+        group: "Members",
         items: [
             {
-                label: "Oyuncular",
+                label: "Players",
                 icon: Users,
                 href: "/dashboard/players",
             },
             {
-                label: "Antrenörler",
+                label: "Coaches",
                 icon: GraduationCap,
                 href: "/dashboard/coaches",
             },
             {
-                label: "Veliler",
+                label: "Parents",
                 icon: Heart,
                 href: "/dashboard/parents",
             },
         ]
     },
     {
-        group: "Organizasyon",
+        group: "Organization",
         items: [
             {
-                label: "Takımlar",
+                label: "Teams",
                 icon: UserPlus,
                 href: "/dashboard/teams",
             },
             {
-                label: "Takvim",
+                label: "Schedule",
                 icon: CalendarDays,
                 href: "/dashboard/calendar",
             },
             {
-                label: "Turnuvalar",
+                label: "Tournaments",
                 icon: Trophy,
                 href: "/dashboard/tournaments",
             },
         ]
     },
     {
-        group: "Sistem",
+        group: "System",
         items: [
             {
-                label: "Analizler",
+                label: "Analytics",
                 icon: BarChart3,
                 href: "/dashboard/analytics",
             },
             {
-                label: "Ayarlar",
+                label: "Settings",
                 icon: Settings,
                 href: "/dashboard/settings",
             },
@@ -95,14 +95,16 @@ export function Sidebar({ isCollapsed }: SidebarProps) {
         <div className="flex h-full flex-col gap-2">
             <div className="flex h-14 items-center justify-center border-b px-3">
                 <Link
-                    href="/dashboard"
+                    href="/"
                     className={cn(
                         "flex items-center gap-2 font-semibold text-foreground",
                         isCollapsed ? "justify-center" : "justify-start w-full"
                     )}
                 >
-                    <span className="text-base">⚽</span>
-                    {!isCollapsed && "Football Academy"}
+                    <div className="w-6 h-6 bg-green-800 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-xs">O</span>
+                    </div>
+                    {!isCollapsed && "OSAAK FC"}
                 </Link>
             </div>
             <div className="flex-1 overflow-auto py-2">

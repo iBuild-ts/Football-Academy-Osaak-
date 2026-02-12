@@ -26,27 +26,27 @@ interface DashboardNavProps {
 
 const notifications = [
     {
-        title: "Yeni Antrenman",
-        description: "U15 takımı için yeni antrenman programı eklendi",
-        time: "5 dakika önce",
+        title: "New Training Session",
+        description: "New training program added for U15 team",
+        time: "5 minutes ago",
         unread: true,
     },
     {
-        title: "Performans Raporu",
-        description: "Ahmet Yılmaz'ın performans raporu güncellendi",
-        time: "1 saat önce",
+        title: "Performance Report",
+        description: "Performance report updated for Ahmet Yilmaz",
+        time: "1 hour ago",
         unread: true,
     },
     {
-        title: "Turnuva Hatırlatması",
-        description: "U17 turnuvası yarın başlıyor",
-        time: "3 saat önce",
+        title: "Tournament Reminder",
+        description: "U17 tournament starts tomorrow",
+        time: "3 hours ago",
         unread: false,
     },
     {
-        title: "Yeni Mesaj",
-        description: "Veli toplantısı hakkında yeni mesajınız var",
-        time: "5 saat önce",
+        title: "New Message",
+        description: "You have a new message about parent meeting",
+        time: "5 hours ago",
         unread: false,
     },
 ]
@@ -93,7 +93,7 @@ export function DashboardNav({ isCollapsed, onCollapsedChange }: DashboardNavPro
                         <div className="relative">
                             <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
                             <Input
-                                placeholder="Ara"
+                                placeholder="Search..."
                                 className="h-9 w-[180px] pl-9 md:w-[240px] lg:w-[280px] bg-muted/50 border-none"
                                 onClick={() => setShortcutsOpen(true)}
                             />
@@ -130,9 +130,9 @@ export function DashboardNav({ isCollapsed, onCollapsedChange }: DashboardNavPro
                         <DropdownMenuContent align="end" className="w-[380px]">
                             <DropdownMenuLabel className="font-normal">
                                 <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium leading-none">Bildirimler</p>
+                                    <p className="text-sm font-medium leading-none">Notifications</p>
                                     <p className="text-xs leading-none text-muted-foreground">
-                                        Son bildirimleriniz burada görüntülenir
+                                        Your recent notifications appear here
                                     </p>
                                 </div>
                             </DropdownMenuLabel>
@@ -162,7 +162,7 @@ export function DashboardNav({ isCollapsed, onCollapsedChange }: DashboardNavPro
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="cursor-pointer justify-center" asChild>
                                 <Link href="/dashboard/notifications">
-                                    Tüm bildirimleri görüntüle
+                                    View all notifications
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>

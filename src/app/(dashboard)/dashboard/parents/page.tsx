@@ -17,26 +17,26 @@ import { useRouter } from "next/navigation"
 const parents: Parent[] = [
     {
         id: "1",
-        name: "Ahmet Yılmaz",
-        email: "ahmet@example.com",
-        phone: "+90 555 123 4567",
-        children: ["Ali Yılmaz", "Ayşe Yılmaz"],
+        name: "Robert Johnson",
+        email: "robert@osaakfc.com",
+        phone: "+1 555 123 4567",
+        children: ["Alex Johnson", "Emma Johnson"],
         status: "active"
     },
     {
         id: "2",
-        name: "Mehmet Demir",
-        email: "mehmet@example.com",
-        phone: "+90 555 234 5678",
-        children: ["Can Demir"],
+        name: "Sarah Williams",
+        email: "sarah@osaakfc.com",
+        phone: "+1 555 234 5678",
+        children: ["Michael Williams"],
         status: "active"
     },
     {
         id: "3",
-        name: "Fatma Kaya",
-        email: "fatma@example.com",
-        phone: "+90 555 345 6789",
-        children: ["Zeynep Kaya", "Mustafa Kaya", "Elif Kaya"],
+        name: "David Brown",
+        email: "david@osaakfc.com",
+        phone: "+1 555 345 6789",
+        children: ["Olivia Brown", "Sophia Brown", "Lucas Brown"],
         status: "inactive"
     },
 ]
@@ -47,18 +47,18 @@ export default function ParentsPage() {
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Veliler</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Parents</h1>
                 <Button onClick={() => router.push("/dashboard/parents/new")}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Yeni Veli
+                    New Parent
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Tüm Veliler</CardTitle>
+                    <CardTitle>All Parents</CardTitle>
                     <CardDescription>
-                        Akademideki tüm velilerin listesi.
+                        List of all parents at OSAAK FC Academy.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -68,20 +68,20 @@ export default function ParentsPage() {
                         searchableColumns={[
                             {
                                 id: "name",
-                                title: "İsim"
+                                title: "Name"
                             }
                         ]}
                         filterableColumns={[
                             {
                                 id: "status",
-                                title: "Durum",
+                                title: "Status",
                                 options: [
                                     {
-                                        label: "Aktif",
+                                        label: "Active",
                                         value: "active",
                                     },
                                     {
-                                        label: "Pasif",
+                                        label: "Inactive",
                                         value: "inactive",
                                     },
                                 ],

@@ -8,23 +8,28 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
+import { useState } from "react"
+import { Eye, EyeOff, Loader2, User, Mail, Lock, Shield } from "lucide-react"
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "İsim en az 2 karakter olmalıdır.",
+        message: "Name must be at least 2 characters.",
     }),
     email: z.string().email({
-        message: "Geçerli bir e-posta adresi giriniz.",
+        message: "Please enter a valid email address.",
     }),
     password: z.string().min(6, {
-        message: "Şifre en az 6 karakter olmalıdır.",
+        message: "Password must be at least 6 characters.",
     }),
     role: z.enum(["ADMIN", "COACH", "PARENT", "PLAYER"], {
-        required_error: "Lütfen bir rol seçiniz.",
+        required_error: "Please select a role.",
     }),
 })
 
 export function RegisterForm() {
+    const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -34,8 +39,22 @@ export function RegisterForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        setIsLoading(true)
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        
+        console.log("Registration attempt:", values)
+        
+        // For demo purposes, show success and redirect
+        alert(`Welcome to OSAAK FC, ${values.name}! Registration successful!`)
+        
+        // Set loading to false before redirect
+        setIsLoading(false)
+        
+        // Redirect to login page after successful registration
+        window.location.href = "/auth/login"
     }
 
     return (
@@ -46,9 +65,16 @@ export function RegisterForm() {
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>İsim</FormLabel>
+                            <FormLabel className="flex items-center gap-2">
+                                <User className="w-4 h-4" />
+                                Full Name
+                            </FormLabel>
                             <FormControl>
-                                <Input placeholder="John Doe" {...field} />
+                                <Input 
+                                    placeholder="Enter your full name" 
+                                    {...field}
+                                    className="focus:border-green-800 focus:ring-green-800"
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -59,9 +85,16 @@ export function RegisterForm() {
                     name="email"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>E-posta</FormLabel>
+                            <FormLabel className="flex items-center gap-2">
+                                <Mail className="w-4 h-4" />
+                                Email Address
+                            </FormLabel>
                             <FormControl>
-                                <Input placeholder="ornek@mail.com" {...field} />
+                                <Input 
+                                    placeholder="player@osaakfc.com" 
+                                    {...field}
+                                    className="focus:border-green-800 focus:ring-green-800"
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -72,9 +105,32 @@ export function RegisterForm() {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Şifre</FormLabel>
+                            <FormLabel className="flex items-center gap-2">
+                                <Lock className="w-4 h-4" />
+                                Password
+                            </FormLabel>
                             <FormControl>
-                                <Input type="password" placeholder="******" {...field} />
+                                <div className="relative">
+                                    <Input 
+                                        type={showPassword ? "text" : "password"} 
+                                        placeholder="Create a strong password" 
+                                        {...field}
+                                        className="focus:border-green-800 focus:ring-green-800 pr-10"
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                            <Eye className="h-4 w-4" />
+                                        )}
+                                    </Button>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -85,18 +141,21 @@ export function RegisterForm() {
                     name="role"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Rol</FormLabel>
+                            <FormLabel className="flex items-center gap-2">
+                                <Shield className="w-4 h-4" />
+                                I am joining as
+                            </FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Rol seçiniz" />
+                                    <SelectTrigger className="focus:border-green-800 focus:ring-green-800">
+                                        <SelectValue placeholder="Select your role" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="ADMIN">Admin</SelectItem>
-                                    <SelectItem value="COACH">Antrenör</SelectItem>
-                                    <SelectItem value="PARENT">Veli</SelectItem>
-                                    <SelectItem value="PLAYER">Oyuncu</SelectItem>
+                                    <SelectItem value="PLAYER">🏃 Player</SelectItem>
+                                    <SelectItem value="COACH">👨‍🏫 Coach</SelectItem>
+                                    <SelectItem value="PARENT">👨‍👩‍👧‍👦 Parent</SelectItem>
+                                    <SelectItem value="ADMIN">🔐 Administrator</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
@@ -104,13 +163,27 @@ export function RegisterForm() {
                     )}
                 />
                 <div className="flex flex-col gap-4">
-                    <Button type="submit" className="w-full">
-                        Kayıt Ol
+                    <Button 
+                        type="submit" 
+                        className="w-full bg-green-800 hover:bg-green-900 transition-all duration-300"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Creating your account...
+                            </>
+                        ) : (
+                            "Join OSAAK FC Academy"
+                        )}
                     </Button>
                     <div className="text-sm text-center text-muted-foreground">
-                        Zaten hesabınız var mı?{" "}
-                        <Link href="/auth/login" className="text-primary hover:underline">
-                            Giriş Yap
+                        Already have an account?{" "}
+                        <Link 
+                            href="/auth/login" 
+                            className="text-green-800 hover:text-green-900 hover:underline font-medium transition-colors duration-200"
+                        >
+                            Sign In to OSAAK FC
                         </Link>
                     </div>
                 </div>

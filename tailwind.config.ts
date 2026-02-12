@@ -49,6 +49,19 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			// OSAAK FC Brand Colors
+  			osaak: {
+  				50: '#f0f9f0',
+  				100: '#dcf2dc',
+  				200: '#bae5ba',
+  				300: '#8dd48d',
+  				400: '#5cb85c',
+  				500: '#2e7d32', // Primary green
+  				600: '#1b5e20', // Dark green
+  				700: '#145214',
+  				800: '#0d370d', // Darkest green
+  				900: '#061f06',
   			}
   		},
   		borderRadius: {

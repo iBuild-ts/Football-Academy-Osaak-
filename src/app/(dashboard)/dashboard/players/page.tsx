@@ -17,29 +17,29 @@ import { useRouter } from "next/navigation"
 const players: Player[] = [
     {
         id: "1",
-        name: "Ahmet Yılmaz",
-        email: "ahmet@example.com",
-        phone: "+90 555 123 4567",
+        name: "John Smith",
+        email: "john@osaakfc.com",
+        phone: "+1 555 123 4567",
         age: 15,
-        position: "Forvet",
+        position: "Forward",
         status: "active"
     },
     {
         id: "2",
-        name: "Mehmet Demir",
-        email: "mehmet@example.com",
-        phone: "+90 555 234 5678",
+        name: "Mike Johnson",
+        email: "mike@osaakfc.com",
+        phone: "+1 555 234 5678",
         age: 14,
-        position: "Orta Saha",
+        position: "Midfielder",
         status: "active"
     },
     {
         id: "3",
-        name: "Ali Kaya",
-        email: "ali@example.com",
-        phone: "+90 555 345 6789",
+        name: "David Wilson",
+        email: "david@osaakfc.com",
+        phone: "+1 555 345 6789",
         age: 16,
-        position: "Defans",
+        position: "Defender",
         status: "inactive"
     },
 ]
@@ -50,18 +50,18 @@ export default function PlayersPage() {
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight">Oyuncular</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Players</h1>
                 <Button onClick={() => router.push("/dashboard/players/new")}>
                     <Plus className="mr-2 h-4 w-4" />
-                    Yeni Oyuncu
+                    New Player
                 </Button>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Tüm Oyuncular</CardTitle>
+                    <CardTitle>All Players</CardTitle>
                     <CardDescription>
-                        Akademideki tüm oyuncuların listesi.
+                        List of all players at OSAAK FC Academy.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -71,20 +71,20 @@ export default function PlayersPage() {
                         searchableColumns={[
                             {
                                 id: "name",
-                                title: "İsim"
+                                title: "Name"
                             }
                         ]}
                         filterableColumns={[
                             {
                                 id: "status",
-                                title: "Durum",
+                                title: "Status",
                                 options: [
                                     {
-                                        label: "Aktif",
+                                        label: "Active",
                                         value: "active",
                                     },
                                     {
-                                        label: "Pasif",
+                                        label: "Inactive",
                                         value: "inactive",
                                     },
                                 ],
