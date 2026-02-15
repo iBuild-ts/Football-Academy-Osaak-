@@ -43,7 +43,7 @@ export default function Home() {
     {
       name: "MR. OLUWAFEMI PAUL",
       role: "Secretary",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771190966339-36f74dd4-2e39-43a4-9ada-0e68548e93bd.jpg",
       description: "Administrative expert ensuring smooth academy operations"
     },
     {
