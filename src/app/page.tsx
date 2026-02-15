@@ -345,7 +345,7 @@ export default function Home() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-32 h-32 rounded-full object-cover border-4 border-green-800 group-hover:border-green-600 transition-colors duration-300"
+                      className="w-32 h-32 rounded-full object-cover object-top border-4 border-green-800 group-hover:border-green-600 transition-colors duration-300"
                     />
                     <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-800 rounded-full flex items-center justify-center">
                       <span className="text-white text-xs font-bold">OS</span>
