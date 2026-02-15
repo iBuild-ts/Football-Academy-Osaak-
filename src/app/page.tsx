@@ -67,7 +67,7 @@ export default function Home() {
     "https://image2url.com/r2/default/images/1771195929163-a8021714-4308-4f35-a6fa-79cfa38ee082.jpg",
     "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=600&h=400&fit=crop&auto=format&q=80",
     "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600&h=400&fit=crop&auto=format&q=80",
-    "https://images.unsplash.com/photo-1519862208867-4e5c16bef1e3?w=600&h=400&fit=crop&auto=format&q=80"
+    "https://image2url.com/r2/default/images/1771196484731-d20f963a-e2f7-48c0-807a-d24ff188c94d.jpg"
   ]
 
   // Achievements
