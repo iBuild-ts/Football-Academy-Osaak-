@@ -37,7 +37,7 @@ export default function Home() {
     {
       name: "ARC. AKINDOJUROMI SUNDAY",
       role: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771187187398-859a2f7d-0c6a-4b9b-9f68-1e30d8e94bef.jpg",
       description: "Visionary leader with over 20 years in football development"
     },
     {
