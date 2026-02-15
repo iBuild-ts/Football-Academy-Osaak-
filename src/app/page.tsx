@@ -49,7 +49,7 @@ export default function Home() {
     {
       name: "Coach Olumakaye Ojo",
       role: "Head Coach",
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771192990976-50e7902d-db5a-463e-8ad8-7224346af370.jpg",
       description: "UEFA certified coach with international experience"
     },
     {
