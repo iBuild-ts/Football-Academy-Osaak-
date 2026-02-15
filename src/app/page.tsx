@@ -63,7 +63,7 @@ export default function Home() {
   // Gallery images
   const galleryImages = [
     "https://image2url.com/r2/default/images/1771195258650-7b2346f0-e17f-49d5-a20f-79288237b07d.jpg",
-    "https://images.unsplash.com/photo-1551698618-6d2ab572e117?w=600&h=400&fit=crop&auto=format&q=80",
+    "https://image2url.com/r2/default/images/1771195694668-69677214-3f6f-4e0b-ac01-ed1b5623ea23.jpg",
     "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&auto=format&q=80",
     "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=600&h=400&fit=crop&auto=format&q=80",
     "https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=600&h=400&fit=crop&auto=format&q=80",
