@@ -55,7 +55,7 @@ export default function Home() {
     {
       name: "Ogunyanmodi Samson",
       role: "Assistant Head Coach",
-      image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&crop=face&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771192384135-2fb1843d-f81a-4b8d-9dc1-fd473df788c5.jpg",
       description: "Technical specialist focused on youth development"
     }
   ]
