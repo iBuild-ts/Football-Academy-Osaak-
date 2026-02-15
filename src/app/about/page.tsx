@@ -30,9 +30,11 @@ export default function About() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <Link href="/" className="flex items-center space-x-2 animate-fade-in">
-              <div className="w-10 h-10 bg-green-800 rounded-full flex items-center justify-center transform hover:scale-110 transition-transform duration-300">
-                <span className="text-white font-bold text-lg">O</span>
-              </div>
+              <img 
+                src="https://image2url.com/r2/default/images/1771181906318-9e6ca417-a970-4d9f-9f25-913ec4b72357.jpg"
+                alt="OSAAK FC Logo"
+                className="w-10 h-10 rounded-lg object-cover transform hover:scale-110 transition-transform duration-300"
+              />
               <span className="text-2xl font-bold text-green-800">OSAAK FC</span>
             </Link>
             
@@ -425,9 +427,11 @@ export default function About() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-green-800 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">O</span>
-                </div>
+                <img 
+                  src="https://image2url.com/r2/default/images/1771181906318-9e6ca417-a970-4d9f-9f25-913ec4b72357.jpg"
+                  alt="OSAAK FC Logo"
+                  className="w-8 h-8 rounded-lg object-cover"
+                />
                 <span className="text-xl font-bold">OSAAK FC</span>
               </div>
               <p className="text-gray-400">
