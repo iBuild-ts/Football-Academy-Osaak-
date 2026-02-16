@@ -285,7 +285,7 @@ export default function Home() {
       <section className="py-12 sm:py-16 md:py-20 px-4 relative">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-            <Card className="absolute top-0 left-0 lg:relative bg-green-800 text-white transform -translate-y-8 lg:translate-y-0 shadow-2xl">
+            <Card className="bg-green-800 text-white shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-xl sm:text-2xl font-bold flex items-center">
                   <Target className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
@@ -300,7 +300,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-2xl lg:ml-auto">
+            <Card className="bg-white shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-xl sm:text-2xl font-bold text-green-800 flex items-center">
                   <Star className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
