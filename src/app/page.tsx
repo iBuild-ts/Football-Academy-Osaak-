@@ -12,6 +12,7 @@ export default function Home() {
   const [scrollY, setScrollY] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [animatedSections, setAnimatedSections] = useState(new Set())
 
   // Hero slider images
   const heroSlides = [
@@ -107,11 +108,31 @@ export default function Home() {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 5000)
     
+    // Scroll-triggered animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    }
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id
+          setAnimatedSections(prev => new Set(prev).add(sectionId))
+        }
+      })
+    }, observerOptions)
+    
+    // Observe all sections
+    const sections = document.querySelectorAll('section[id]')
+    sections.forEach(section => observer.observe(section))
+    
     window.addEventListener('scroll', handleScroll)
     return () => {
       window.removeEventListener('scroll', handleScroll)
       clearTimeout(timer)
       clearInterval(slideTimer)
+      observer.disconnect()
     }
   }, [])
 
@@ -252,7 +273,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-8 sm:py-12 md:py-16 bg-gradient-to-r from-green-800 to-green-900 text-white relative overflow-hidden">
+      <section id="stats" className="py-8 sm:py-12 md:py-16 bg-gradient-to-r from-green-800 to-green-900 text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
         </div>
@@ -266,11 +287,13 @@ export default function Home() {
             ].map((stat, index) => (
               <div 
                 key={index}
-                className="transform transition-all duration-700 hover:scale-110"
+                className={`transform transition-all duration-700 hover:scale-110 ${
+                  animatedSections.has('stats') 
+                    ? 'translate-y-0 opacity-100' 
+                    : 'translate-y-8 opacity-0'
+                }`}
                 style={{ 
-                  transitionDelay: `${stat.delay}ms`,
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)'
+                  transitionDelay: `${stat.delay}ms`
                 }}
               >
                 <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2 text-green-100">{stat.number}</div>
@@ -282,10 +305,14 @@ export default function Home() {
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 relative">
+      <section id="mission" className="py-12 sm:py-16 md:py-20 px-4 relative">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-            <Card className="bg-green-800 text-white shadow-2xl">
+            <Card className={`bg-green-800 text-white shadow-2xl transform transition-all duration-1000 ${
+              animatedSections.has('mission')
+                ? 'translate-y-0 opacity-100'
+                : 'translate-y-8 opacity-0'
+            }`}>
               <CardHeader>
                 <CardTitle className="text-xl sm:text-2xl font-bold flex items-center">
                   <Target className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
@@ -300,7 +327,11 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-2xl">
+            <Card className={`bg-white shadow-2xl transform transition-all duration-1000 delay-200 ${
+              animatedSections.has('mission')
+                ? 'translate-y-0 opacity-100'
+                : 'translate-y-8 opacity-0'
+            }`}>
               <CardHeader>
                 <CardTitle className="text-xl sm:text-2xl font-bold text-green-800 flex items-center">
                   <Star className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
@@ -321,15 +352,19 @@ export default function Home() {
       {/* Leadership Team */}
       <section id="team" className="py-12 sm:py-16 md:py-20 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <Badge className={`mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transform transition-all duration-1000 ${
+            animatedSections.has('team')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
+            <Badge className="mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200">
               Leadership
             </Badge>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
               Meet Our Team
             </h2>
-            <p className={`text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-              Led by experienced professionals dedicated to developing the next generation of football stars
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+              Led by experienced professionals dedicated to developing next generation of football stars
             </p>
           </div>
 
@@ -337,7 +372,11 @@ export default function Home() {
             {teamMembers.map((member, index) => (
               <Card 
                 key={index} 
-                className={`group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+                className={`group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 ${
+                  animatedSections.has('team')
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-8 opacity-0'
+                }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
                 <CardHeader className="text-center">
@@ -365,15 +404,19 @@ export default function Home() {
             {/* Academy Gallery */}
       <section id="gallery" className="py-12 sm:py-16 md:py-20 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <Badge className={`mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transform transition-all duration-1000 ${
+            animatedSections.has('gallery')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
+            <Badge className="mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200">
               <Camera className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               Gallery
             </Badge>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
               Academy Life
             </h2>
-            <p className={`text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
               Experience the energy, passion, and excellence that defines OSAAK FC Academy
             </p>
           </div>
@@ -382,7 +425,11 @@ export default function Home() {
             {galleryImages.map((image, index) => (
               <div 
                 key={index}
-                className={`group relative overflow-hidden rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+                className={`group relative overflow-hidden rounded-lg shadow-lg transform transition-all duration-500 hover:scale-105 ${
+                  animatedSections.has('gallery')
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-8 opacity-0'
+                }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <img
@@ -404,15 +451,19 @@ export default function Home() {
       {/* Academy Achievements */}
       <section id="achievements" className="py-12 sm:py-16 md:py-20 px-4 bg-gray-50">
         <div className="container mx-auto">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <Badge className={`mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transform transition-all duration-1000 ${
+            animatedSections.has('achievements')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
+            <Badge className="mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200">
               <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
               Achievements
             </Badge>
-            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
               Our Success Story
             </h2>
-            <p className={`text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
               Celebrating excellence and milestones in our journey to football greatness
             </p>
           </div>
@@ -421,7 +472,11 @@ export default function Home() {
             {achievements.map((achievement, index) => (
               <Card 
                 key={index}
-                className={`text-center hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 bg-white ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+                className={`text-center hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 bg-white ${
+                  animatedSections.has('achievements')
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-8 opacity-0'
+                }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
                 <CardHeader>
@@ -443,15 +498,27 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 bg-gradient-to-r from-green-800 to-green-900">
+      <section id="cta" className="py-12 sm:py-16 md:py-20 px-4 bg-gradient-to-r from-green-800 to-green-900">
         <div className="container mx-auto text-center">
-          <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 transform transition-all duration-1000 ${
+            animatedSections.has('cta')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
             Ready to Join Legacy?
           </h2>
-          <p className={`text-base sm:text-lg md:text-xl text-green-100 mb-6 sm:mb-8 max-w-2xl mx-auto transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <p className={`text-base sm:text-lg md:text-xl text-green-100 mb-6 sm:mb-8 max-w-2xl mx-auto transform transition-all duration-1000 delay-200 ${
+            animatedSections.has('cta')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
             Take the first step towards becoming a champion. Join OSAAK FC Academy today.
           </p>
-          <div className={`flex flex-col sm:flex-row gap-4 justify-center transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+          <div className={`flex flex-col sm:flex-row gap-4 justify-center transform transition-all duration-1000 delay-400 ${
+            animatedSections.has('cta')
+              ? 'translate-y-0 opacity-100'
+              : 'translate-y-8 opacity-0'
+          }`}>
             <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base" asChild>
               <Link href="/about">Learn More</Link>
             </Button>
