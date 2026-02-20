@@ -13,6 +13,8 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [animatedSections, setAnimatedSections] = useState(new Set())
+  const [showNewsPopup, setShowNewsPopup] = useState(false)
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0)
 
   // Hero slider images
   const heroSlides = [
@@ -51,7 +53,7 @@ export default function Home() {
       name: "Coach Olumakaye Ojo",
       role: "Head Coach",
       image: "https://image2url.com/r2/default/images/1771192990976-50e7902d-db5a-463e-8ad8-7224346af370.jpg",
-      description: "UEFA certified coach with international experience"
+      description: "Experienced coach with international experience"
     },
     {
       name: "Ogunyanmodi Samson",
@@ -71,31 +73,43 @@ export default function Home() {
     "https://image2url.com/r2/default/images/1771196484731-d20f963a-e2f7-48c0-807a-d24ff188c94d.jpg"
   ]
 
-  // Achievements
-  const achievements = [
+  // Sports news data
+  const sportsNews = [
     {
-      title: "Regional Champions 2023",
-      description: "U-15 Tournament Victory",
-      icon: <Trophy className="w-8 h-8 text-yellow-500" />,
-      year: "2023"
+      title: "Nigeria Super Eagles Prepare for World Cup Qualifiers",
+      source: "ESPN",
+      time: "2 hours ago",
+      content: "The Nigerian national team intensifies training ahead of crucial World Cup qualification matches..."
     },
     {
-      title: "Best Youth Academy",
-      description: "National Football Awards",
-      icon: <Award className="w-8 h-8 text-blue-500" />,
-      year: "2023"
+      title: "Premier League: Manchester City Extends Lead at Top",
+      source: "BBC Sport",
+      time: "4 hours ago",
+      content: "Manchester City continues their dominant run with a convincing victory over Liverpool..."
     },
     {
-      title: "100+ Players Scouted",
-      description: "Professional Club Signings",
-      icon: <Users className="w-8 h-8 text-green-500" />,
-      year: "2022-2024"
+      title: "Chelsea Signs Young Talent from Nigerian Academy",
+      source: "Sky Sports",
+      time: "6 hours ago",
+      content: "Premier League giants Chelsea complete signing of promising 16-year-old from Lagos academy..."
     },
     {
-      title: "Excellence in Training",
-      description: "International Recognition",
-      icon: <Medal className="w-8 h-8 text-purple-500" />,
-      year: "2024"
+      title: "AFCON 2025: Tournament Schedule Announced",
+      source: "CNN Sport",
+      time: "8 hours ago",
+      content: "CAF releases complete schedule and venues for upcoming Africa Cup of Nations tournament..."
+    },
+    {
+      title: "Local Academy Produces Professional Players",
+      source: "Sports Vanguard",
+      time: "12 hours ago",
+      content: "Five players from Nigerian youth academies secure professional contracts abroad..."
+    },
+    {
+      title: "Women's Football: Super Falcons Win Friendly",
+      source: "The Guardian",
+      time: "1 day ago",
+      content: "Nigeria's women's national team defeats South Africa in international friendly..."
     }
   ]
 
@@ -107,6 +121,29 @@ export default function Home() {
     const slideTimer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
     }, 5000)
+    
+    // Random news popup every 30 seconds
+    const newsTimer = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * sportsNews.length)
+      setCurrentNewsIndex(randomIndex)
+      setShowNewsPopup(true)
+      
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        setShowNewsPopup(false)
+      }, 8000)
+    }, 30000) // Show news every 30 seconds
+    
+    // Show first news after 10 seconds
+    const firstNewsTimer = setTimeout(() => {
+      const randomIndex = Math.floor(Math.random() * sportsNews.length)
+      setCurrentNewsIndex(randomIndex)
+      setShowNewsPopup(true)
+      
+      setTimeout(() => {
+        setShowNewsPopup(false)
+      }, 8000)
+    }, 10000)
     
     // Scroll-triggered animations
     const observerOptions = {
@@ -442,55 +479,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Academy Achievements */}
-      <section id="achievements" className="py-12 sm:py-16 md:py-20 px-4 bg-gray-50">
-        <div className="container mx-auto">
-          <div className={`text-center mb-8 sm:mb-12 lg:mb-16 transform transition-all duration-1000 ${
-            animatedSections.has('achievements')
-              ? 'translate-y-0 opacity-100'
-              : 'translate-y-8 opacity-0'
-          }`}>
-            <Badge className="mb-3 sm:mb-4 bg-green-100 text-green-800 border-green-200">
-              <Trophy className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              Achievements
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
-              Our Success Story
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-              Celebrating excellence and milestones in our journey to football greatness
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {achievements.map((achievement, index) => (
-              <Card 
-                key={index}
-                className={`text-center hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border-0 bg-white ${
-                  animatedSections.has('achievements')
-                    ? 'translate-y-0 opacity-100'
-                    : 'translate-y-8 opacity-0'
-                }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <CardHeader>
-                  <div className="mx-auto mb-3 sm:mb-4 p-3 sm:p-4 bg-gray-50 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-                    {achievement.icon}
-                  </div>
-                  <CardTitle className="text-base sm:text-lg text-gray-900">{achievement.title}</CardTitle>
-                  <Badge variant="secondary" className="w-fit mx-auto text-xs sm:text-sm">
-                    {achievement.year}
-                  </Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs sm:text-sm text-gray-600">{achievement.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section id="cta" className="py-12 sm:py-16 md:py-20 px-4 bg-gradient-to-r from-green-800 to-green-900">
         <div className="container mx-auto text-center">
@@ -545,7 +533,6 @@ export default function Home() {
               <ul className="space-y-1.5 sm:space-y-2 text-gray-400 text-sm sm:text-base">
                 <li><Link href="#team" className="hover:text-green-400 transition-colors">Team</Link></li>
                 <li><Link href="#gallery" className="hover:text-green-400 transition-colors">Gallery</Link></li>
-                <li><Link href="#achievements" className="hover:text-green-400 transition-colors">Achievements</Link></li>
                 <li><Link href="/register" className="hover:text-green-400 transition-colors">Join Academy</Link></li>
               </ul>
             </div>
@@ -572,6 +559,37 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Sports News Popup */}
+      {showNewsPopup && (
+        <div className="fixed bottom-4 right-4 max-w-sm bg-white rounded-lg shadow-2xl border border-gray-200 p-4 z-50 animate-in slide-in-from-bottom-5 duration-300">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <span className="text-xs font-semibold text-red-600 uppercase tracking-wide">Breaking News</span>
+            </div>
+            <button
+              onClick={() => setShowNewsPopup(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <h4 className="font-bold text-gray-900 mb-2 text-sm leading-tight">
+            {sportsNews[currentNewsIndex].title}
+          </h4>
+          
+          <p className="text-xs text-gray-600 mb-2 leading-relaxed">
+            {sportsNews[currentNewsIndex].content}
+          </p>
+          
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <span className="font-medium">{sportsNews[currentNewsIndex].source}</span>
+            <span>{sportsNews[currentNewsIndex].time}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
