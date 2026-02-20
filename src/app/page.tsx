@@ -22,7 +22,7 @@ export default function Home() {
       subtitle: "Professional coaching for tomorrow's champions"
     },
     {
-      image: "https://images.unsplash.com/photo-1551698618-6d2ab572e117?w=1920&h=1080&fit=crop&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771558231466-1ca162e8-194f-4225-ac0b-accfb1f8447f.blob",
       title: "World-Class Facilities",
       subtitle: "State-of-the-art training grounds and equipment"
     },
