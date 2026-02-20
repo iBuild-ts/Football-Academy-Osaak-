@@ -183,9 +183,6 @@ export default function Home() {
             </div>
             
             <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-              <Button variant="outline" className="hover:bg-green-50 hover:border-green-800 hover:text-green-800 transition-all duration-300 text-sm px-3 py-2" asChild>
-                <Link href="/auth/login">Login</Link>
-              </Button>
               <Button className="bg-green-800 hover:bg-green-900 hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm px-3 py-2" asChild>
                 <Link href="/register">Join Academy</Link>
               </Button>
@@ -200,9 +197,6 @@ export default function Home() {
               <Link href="#facilities" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Facilities</Link>
               <Link href="#contact" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Contact</Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
-                <Button variant="outline" className="w-full text-sm" asChild>
-                  <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
-                </Button>
                 <Button className="bg-green-800 hover:bg-green-900 w-full text-sm" asChild>
                   <Link href="/register" onClick={() => setIsMenuOpen(false)}>Join Academy</Link>
                 </Button>
