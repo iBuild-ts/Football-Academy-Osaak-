@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     
     // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'address', 'position', 'experience']
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'address', 'city', 'state', 'country', 'height', 'weight', 'dominantFoot', 'jerseySize', 'shoeSize', 'position', 'experience']
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -36,16 +36,54 @@ export async function POST(request: NextRequest) {
       body.phone || '',
       body.dateOfBirth || '',
       body.address || '',
+      body.city || '',
+      body.state || '',
+      body.postalCode || '',
+      body.country || '',
+      
+      // Physical Attributes
+      body.height || '',
+      body.weight || '',
+      body.dominantFoot || '',
+      body.jerseySize || '',
+      body.shoeSize || '',
+      
+      // Football Information
       body.position || '',
+      body.secondaryPosition || '',
       body.experience || '',
+      body.currentClub || '',
+      body.previousClubs || '',
       body.achievements || '',
+      body.playingStyle || '',
+      
+      // Health & Medical
+      body.bloodType || '',
+      body.allergies || '',
+      body.medicalConditions || '',
+      body.medications || '',
+      body.injuries || '',
+      body.emergencyContact || '',
+      body.emergencyPhone || '',
+      body.emergencyRelationship || '',
+      
+      // Parent/Guardian Information
       body.parentName || '',
+      body.parentPhone || '',
       body.parentEmail || '',
-      body.parentPhone || ''
+      body.parentAddress || '',
+      
+      // Additional Information
+      body.education || '',
+      body.goals || '',
+      body.availability || '',
+      body.transportation || '',
+      body.preferredTrainingTime || '',
+      body.howDidYouHear || ''
     ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')
 
     // Check if file exists, if not create with headers
-    const headers = 'Timestamp,FirstName,LastName,Email,Phone,DateOfBirth,Address,Position,Experience,Achievements,ParentName,ParentEmail,ParentPhone\n'
+    const headers = 'Timestamp,FirstName,LastName,Email,Phone,DateOfBirth,Address,City,State,PostalCode,Country,Height,Weight,DominantFoot,JerseySize,ShoeSize,Position,SecondaryPosition,Experience,CurrentClub,PreviousClubs,Achievements,PlayingStyle,BloodType,Allergies,MedicalConditions,Medications,Injuries,EmergencyContact,EmergencyPhone,EmergencyRelationship,ParentName,ParentPhone,ParentEmail,ParentAddress,Education,Goals,Availability,Transportation,PreferredTrainingTime,HowDidYouHear\n'
     
     try {
       if (fs.existsSync(csvPath)) {
