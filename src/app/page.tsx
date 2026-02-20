@@ -168,8 +168,8 @@ export default function Home() {
                 About
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-800 transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link href="#programs" className="text-gray-600 hover:text-green-800 transition-colors duration-200 relative group">
-                Programs
+              <Link href="/register" className="text-gray-600 hover:text-green-800 transition-colors duration-200 relative group">
+                Join Academy
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-800 transition-all duration-300 group-hover:w-full"></span>
               </Link>
               <Link href="#facilities" className="text-gray-600 hover:text-green-800 transition-colors duration-200 relative group">
@@ -187,7 +187,7 @@ export default function Home() {
                 <Link href="/auth/login">Login</Link>
               </Button>
               <Button className="bg-green-800 hover:bg-green-900 hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm px-3 py-2" asChild>
-                <Link href="/auth/register">Join Academy</Link>
+                <Link href="/register">Join Academy</Link>
               </Button>
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function Home() {
           <div className={`lg:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? 'max-h-80 py-4' : 'max-h-0'}`}>
             <div className="flex flex-col space-y-3">
               <Link href="/about" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="#programs" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Programs</Link>
+              <Link href="/register" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Join Academy</Link>
               <Link href="#facilities" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Facilities</Link>
               <Link href="#contact" className="text-gray-600 hover:text-green-800 transition-colors duration-200 py-2 text-base" onClick={() => setIsMenuOpen(false)}>Contact</Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
@@ -204,7 +204,7 @@ export default function Home() {
                   <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>Login</Link>
                 </Button>
                 <Button className="bg-green-800 hover:bg-green-900 w-full text-sm" asChild>
-                  <Link href="/auth/register" onClick={() => setIsMenuOpen(false)}>Join Academy</Link>
+                  <Link href="/register" onClick={() => setIsMenuOpen(false)}>Join Academy</Link>
                 </Button>
               </div>
             </div>
@@ -234,7 +234,7 @@ export default function Home() {
                   {slide.subtitle}
                 </p>
                 <div className={`transform transition-all duration-1000 delay-400 ${index === currentSlide ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                  <Link href="/auth/register">
+                  <Link href="/register">
                     <Button size="lg" className="bg-green-800 hover:bg-green-900 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg transform hover:scale-105 transition-all duration-300">
                       Start Your Journey
                       <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -523,7 +523,7 @@ export default function Home() {
               <Link href="/about">Learn More</Link>
             </Button>
             <Button className="bg-white text-green-800 hover:bg-green-50 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base transform hover:scale-105 transition-all duration-300" asChild>
-              <Link href="/auth/register">Join Academy</Link>
+              <Link href="/register">Join Academy</Link>
             </Button>
           </div>
         </div>
@@ -552,7 +552,7 @@ export default function Home() {
                 <li><Link href="#team" className="hover:text-green-400 transition-colors">Team</Link></li>
                 <li><Link href="#gallery" className="hover:text-green-400 transition-colors">Gallery</Link></li>
                 <li><Link href="#achievements" className="hover:text-green-400 transition-colors">Achievements</Link></li>
-                <li><Link href="/auth/register" className="hover:text-green-400 transition-colors">Join Academy</Link></li>
+                <li><Link href="/register" className="hover:text-green-400 transition-colors">Join Academy</Link></li>
               </ul>
             </div>
             <div>
