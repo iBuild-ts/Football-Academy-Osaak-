@@ -17,7 +17,7 @@ export default function Home() {
   // Hero slider images
   const heroSlides = [
     {
-      image: "https://images.unsplash.com/photo-1517466787929-bc90951fc09f?w=1920&h=1080&fit=crop&auto=format&q=80",
+      image: "https://image2url.com/r2/default/images/1771557773938-26f9279c-a873-42dc-acbe-527cd3ee6d88.blob",
       title: "Elite Football Training",
       subtitle: "Professional coaching for tomorrow's champions"
     },
