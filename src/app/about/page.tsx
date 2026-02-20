@@ -457,8 +457,9 @@ export default function About() {
             <div>
               <h3 className="font-semibold mb-4">Contact</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>info@osaakfc.com</li>
-                <li>+234 800 000 0000</li>
+                <li>osaak01@gmail.com</li>
+                <li>+234 806 517 0142</li>
+                <li>+234 906 019 3695</li>
                 <li>Lagos, Nigeria</li>
               </ul>
             </div>
