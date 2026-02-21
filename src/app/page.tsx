@@ -551,7 +551,7 @@ export default function Home() {
                 <li>osaak01@gmail.com</li>
                 <li>+234 806 517 0142</li>
                 <li>+234 906 019 3695</li>
-                <li>Lagos, Nigeria</li>
+                <li>Ondo State, Nigeria</li>
               </ul>
             </div>
           </div>
