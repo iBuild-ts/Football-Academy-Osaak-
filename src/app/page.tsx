@@ -556,7 +556,10 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-gray-400">
-            <p className="text-xs sm:text-sm">&copy; 2026 OSAAK FC Academy. All rights reserved.</p>
+            <p className="text-xs sm:text-sm mb-2">&copy; 2026 OSAAK FC Academy. All rights reserved.</p>
+            <p className="text-xs text-gray-500 hover:text-gray-400 transition-colors">
+              Built by <a href="https://www.ibuild.work" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">iBuild.work</a>
+            </p>
           </div>
         </div>
       </footer>
