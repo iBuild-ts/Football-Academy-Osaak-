@@ -1,6 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { GoogleSpreadsheet } from 'google-spreadsheet'
+
+// Google Sheets configuration
+const SPREADSHEET_ID = '1NhTkgtltuQQCnovURCjJMdtJ9DTsFn5XjqVhqbACZ68'
+const SHEET_NAME = 'Sheet1' // Default sheet name
+
+// Service account credentials (you should set these as environment variables)
+const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || ''
+const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || ''
+
+// Initialize Google Sheets client
+async function getGoogleSheetsClient() {
+  try {
+    const auth = new GoogleSpreadsheet.JWT({
+      email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      key: GOOGLE_PRIVATE_KEY,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    })
+    
+    const doc = new GoogleSpreadsheet(SPREADSHEET_ID, auth)
+    await doc.loadInfo()
+    return doc
+  } catch (error) {
+    console.error('Error initializing Google Sheets client:', error)
+    return null
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,18 +42,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create data directory if it doesn't exist
-    const dataDir = path.join(process.cwd(), 'data')
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true })
+    // Initialize Google Sheets client
+    const doc = await getGoogleSheetsClient()
+    if (!doc) {
+      return NextResponse.json(
+        { error: 'Failed to connect to Google Sheets' },
+        { status: 500 }
+      )
     }
 
-    // CSV file path
-    const csvPath = path.join(dataDir, 'players.csv')
-    
-    // Prepare CSV row
+    // Get the sheet
+    const sheet = doc.sheetsByTitle[SHEET_NAME] || await doc.addSheet({
+      title: SHEET_NAME,
+      headerValues: [
+        'Timestamp', 'FirstName', 'LastName', 'Email', 'Phone', 'DateOfBirth', 'Address', 'City', 'State', 'PostalCode', 'Country',
+        'Height', 'Weight', 'DominantFoot', 'JerseySize', 'ShoeSize', 'Position', 'SecondaryPosition', 'Experience', 'CurrentClub', 
+        'PreviousClubs', 'Achievements', 'PlayingStyle', 'BloodType', 'Allergies', 'MedicalConditions', 'Medications', 
+        'Injuries', 'EmergencyContact', 'EmergencyPhone', 'EmergencyRelationship', 'ParentName', 'ParentPhone', 
+        'ParentEmail', 'ParentAddress', 'Education', 'Goals', 'Availability', 'Transportation', 
+        'PreferredTrainingTime', 'HowDidYouHear'
+      ]
+    })
+
+    // Prepare row data
     const timestamp = new Date().toISOString()
-    const csvRow = [
+    const rowData = [
       timestamp,
       body.firstName || '',
       body.lastName || '',
@@ -80,26 +118,10 @@ export async function POST(request: NextRequest) {
       body.transportation || '',
       body.preferredTrainingTime || '',
       body.howDidYouHear || ''
-    ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')
+    ]
 
-    // Check if file exists, if not create with headers
-    const headers = 'Timestamp,FirstName,LastName,Email,Phone,DateOfBirth,Address,City,State,PostalCode,Country,Height,Weight,DominantFoot,JerseySize,ShoeSize,Position,SecondaryPosition,Experience,CurrentClub,PreviousClubs,Achievements,PlayingStyle,BloodType,Allergies,MedicalConditions,Medications,Injuries,EmergencyContact,EmergencyPhone,EmergencyRelationship,ParentName,ParentPhone,ParentEmail,ParentAddress,Education,Goals,Availability,Transportation,PreferredTrainingTime,HowDidYouHear\n'
-    
-    try {
-      if (fs.existsSync(csvPath)) {
-        // Append to existing file
-        fs.appendFileSync(csvPath, csvRow + '\n')
-      } else {
-        // Create new file with headers
-        fs.writeFileSync(csvPath, headers + csvRow + '\n')
-      }
-    } catch (fileError) {
-      console.error('File operation error:', fileError)
-      return NextResponse.json(
-        { error: 'Failed to save registration data' },
-        { status: 500 }
-      )
-    }
+    // Add row to Google Sheet
+    await sheet.addRow(rowData)
 
     // Send confirmation email (you can implement this later)
     // For now, we'll just log it
@@ -132,35 +154,72 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
-    const csvPath = path.join(process.cwd(), 'data', 'players.csv')
-    
-    if (!fs.existsSync(csvPath)) {
+    // Initialize Google Sheets client
+    const doc = await getGoogleSheetsClient()
+    if (!doc) {
+      return NextResponse.json(
+        { error: 'Failed to connect to Google Sheets' },
+        { status: 500 }
+      )
+    }
+
+    // Get the sheet
+    const sheet = doc.sheetsByTitle[SHEET_NAME]
+    if (!sheet) {
       return NextResponse.json(
         { registrations: [], message: 'No registrations found' },
         { status: 200 }
       )
     }
 
-    const csvContent = fs.readFileSync(csvPath, 'utf8')
-    const lines = csvContent.split('\n').filter(line => line.trim())
+    // Get all rows
+    const rows = await sheet.getRows()
     
-    if (lines.length <= 1) {
-      return NextResponse.json(
-        { registrations: [], message: 'No registrations found' },
-        { status: 200 }
-      )
-    }
-
-    // Parse CSV (simple implementation)
-    const headers = lines[0].split(',').map(h => h.replace(/"/g, ''))
-    const registrations = lines.slice(1).map(line => {
-      const values = line.split(',').map(v => v.replace(/"/g, ''))
-      const obj: any = {}
-      headers.forEach((header, index) => {
-        obj[header] = values[index] || ''
-      })
-      return obj
-    })
+    // Convert to response format
+    const registrations = rows.map((row, index) => ({
+      id: index + 1,
+      timestamp: row.get('Timestamp') || '',
+      firstName: row.get('FirstName') || '',
+      lastName: row.get('LastName') || '',
+      email: row.get('Email') || '',
+      phone: row.get('Phone') || '',
+      dateOfBirth: row.get('DateOfBirth') || '',
+      address: row.get('Address') || '',
+      city: row.get('City') || '',
+      state: row.get('State') || '',
+      postalCode: row.get('PostalCode') || '',
+      country: row.get('Country') || '',
+      height: row.get('Height') || '',
+      weight: row.get('Weight') || '',
+      dominantFoot: row.get('DominantFoot') || '',
+      jerseySize: row.get('JerseySize') || '',
+      shoeSize: row.get('ShoeSize') || '',
+      position: row.get('Position') || '',
+      secondaryPosition: row.get('SecondaryPosition') || '',
+      experience: row.get('Experience') || '',
+      currentClub: row.get('CurrentClub') || '',
+      previousClubs: row.get('PreviousClubs') || '',
+      achievements: row.get('Achievements') || '',
+      playingStyle: row.get('PlayingStyle') || '',
+      bloodType: row.get('BloodType') || '',
+      allergies: row.get('Allergies') || '',
+      medicalConditions: row.get('MedicalConditions') || '',
+      medications: row.get('Medications') || '',
+      injuries: row.get('Injuries') || '',
+      emergencyContact: row.get('EmergencyContact') || '',
+      emergencyPhone: row.get('EmergencyPhone') || '',
+      emergencyRelationship: row.get('EmergencyRelationship') || '',
+      parentName: row.get('ParentName') || '',
+      parentPhone: row.get('ParentPhone') || '',
+      parentEmail: row.get('ParentEmail') || '',
+      parentAddress: row.get('ParentAddress') || '',
+      education: row.get('Education') || '',
+      goals: row.get('Goals') || '',
+      availability: row.get('Availability') || '',
+      transportation: row.get('Transportation') || '',
+      preferredTrainingTime: row.get('PreferredTrainingTime') || '',
+      howDidYouHear: row.get('HowDidYouHear') || ''
+    }))
 
     return NextResponse.json(
       { 
