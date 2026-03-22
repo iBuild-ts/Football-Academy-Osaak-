@@ -7,6 +7,17 @@ import { Badge } from "@/components/ui/badge"
 import { Trophy, Users, Calendar, Target, Star, ArrowRight, Menu, X, ChevronDown, ChevronLeft, ChevronRight, Award, Camera, Medal } from "lucide-react"
 import { useState, useEffect } from "react"
 
+// Metadata for favicon
+export const metadata = {
+  title: 'OSAAK FC Academy - Elite Football Training',
+  description: 'Professional football academy offering elite training programs for young athletes',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+}
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrollY, setScrollY] = useState(0)

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
+import { JWT } from 'google-auth-library'
+import fs from 'fs'
+import path from 'path'
 
 // Google Sheets configuration
 const SPREADSHEET_ID = '1NhTkgtltuQQCnovURCjJMdtJ9DTsFn5XjqVhqbACZ68'
@@ -9,10 +12,15 @@ const SHEET_NAME = 'Sheet1' // Default sheet name
 const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || ''
 const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || ''
 
+// Check if Google Sheets is configured
+const USE_GOOGLE_SHEETS = GOOGLE_SERVICE_ACCOUNT_EMAIL && GOOGLE_PRIVATE_KEY && GOOGLE_SERVICE_ACCOUNT_EMAIL !== '' && GOOGLE_PRIVATE_KEY !== ''
+
 // Initialize Google Sheets client
 async function getGoogleSheetsClient() {
+  if (!USE_GOOGLE_SHEETS) return null
+  
   try {
-    const auth = new GoogleSpreadsheet.JWT({
+    const auth = new JWT({
       email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
       key: GOOGLE_PRIVATE_KEY,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -27,46 +35,21 @@ async function getGoogleSheetsClient() {
   }
 }
 
-export async function POST(request: NextRequest) {
+// Fallback CSV storage
+async function saveToCSV(body: any) {
   try {
-    const body = await request.json()
+    // Create data directory if it doesn't exist
+    const dataDir = path.join(process.cwd(), 'data')
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true })
+    }
+
+    // CSV file path
+    const csvPath = path.join(dataDir, 'players.csv')
     
-    // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'address', 'city', 'state', 'country', 'height', 'weight', 'dominantFoot', 'jerseySize', 'shoeSize', 'position', 'experience']
-    for (const field of requiredFields) {
-      if (!body[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Initialize Google Sheets client
-    const doc = await getGoogleSheetsClient()
-    if (!doc) {
-      return NextResponse.json(
-        { error: 'Failed to connect to Google Sheets' },
-        { status: 500 }
-      )
-    }
-
-    // Get the sheet
-    const sheet = doc.sheetsByTitle[SHEET_NAME] || await doc.addSheet({
-      title: SHEET_NAME,
-      headerValues: [
-        'Timestamp', 'FirstName', 'LastName', 'Email', 'Phone', 'DateOfBirth', 'Address', 'City', 'State', 'PostalCode', 'Country',
-        'Height', 'Weight', 'DominantFoot', 'JerseySize', 'ShoeSize', 'Position', 'SecondaryPosition', 'Experience', 'CurrentClub', 
-        'PreviousClubs', 'Achievements', 'PlayingStyle', 'BloodType', 'Allergies', 'MedicalConditions', 'Medications', 
-        'Injuries', 'EmergencyContact', 'EmergencyPhone', 'EmergencyRelationship', 'ParentName', 'ParentPhone', 
-        'ParentEmail', 'ParentAddress', 'Education', 'Goals', 'Availability', 'Transportation', 
-        'PreferredTrainingTime', 'HowDidYouHear'
-      ]
-    })
-
-    // Prepare row data
+    // Prepare CSV row
     const timestamp = new Date().toISOString()
-    const rowData = [
+    const csvRow = [
       timestamp,
       body.firstName || '',
       body.lastName || '',
@@ -118,17 +101,148 @@ export async function POST(request: NextRequest) {
       body.transportation || '',
       body.preferredTrainingTime || '',
       body.howDidYouHear || ''
-    ]
+    ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')
 
-    // Add row to Google Sheet
-    await sheet.addRow(rowData)
+    // Check if file exists, if not create with headers
+    const headers = 'Timestamp,FirstName,LastName,Email,Phone,DateOfBirth,Address,City,State,PostalCode,Country,Height,Weight,DominantFoot,JerseySize,ShoeSize,Position,SecondaryPosition,Experience,CurrentClub,PreviousClubs,Achievements,PlayingStyle,BloodType,Allergies,MedicalConditions,Medications,Injuries,EmergencyContact,EmergencyPhone,EmergencyRelationship,ParentName,ParentPhone,ParentEmail,ParentAddress,Education,Goals,Availability,Transportation,PreferredTrainingTime,HowDidYouHear\n'
+    
+    if (fs.existsSync(csvPath)) {
+      // Append to existing file
+      fs.appendFileSync(csvPath, csvRow + '\n')
+    } else {
+      // Create new file with headers
+      fs.writeFileSync(csvPath, headers + csvRow + '\n')
+    }
+    
+    return true
+  } catch (error) {
+    console.error('Error saving to CSV:', error)
+    return false
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    
+    // Validate required fields
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'dateOfBirth', 'address', 'city', 'state', 'country', 'height', 'weight', 'dominantFoot', 'jerseySize', 'shoeSize', 'position', 'experience']
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { error: `Missing required field: ${field}` },
+          { status: 400 }
+        )
+      }
+    }
+
+    let saved = false
+    let storageMethod = ''
+    
+    if (USE_GOOGLE_SHEETS) {
+      // Try Google Sheets first
+      try {
+        const doc = await getGoogleSheetsClient()
+        if (doc) {
+          // Get or create sheet
+          const sheet = doc.sheetsByTitle[SHEET_NAME] || await doc.addSheet({
+            title: SHEET_NAME,
+            headerValues: [
+              'Timestamp', 'FirstName', 'LastName', 'Email', 'Phone', 'DateOfBirth', 'Address', 'City', 'State', 'PostalCode', 'Country',
+              'Height', 'Weight', 'DominantFoot', 'JerseySize', 'ShoeSize', 'Position', 'SecondaryPosition', 'Experience', 'CurrentClub', 
+              'PreviousClubs', 'Achievements', 'PlayingStyle', 'BloodType', 'Allergies', 'MedicalConditions', 'Medications', 
+              'Injuries', 'EmergencyContact', 'EmergencyPhone', 'EmergencyRelationship', 'ParentName', 'ParentPhone', 
+              'ParentEmail', 'ParentAddress', 'Education', 'Goals', 'Availability', 'Transportation', 
+              'PreferredTrainingTime', 'HowDidYouHear'
+            ]
+          })
+
+          // Prepare row data
+          const timestamp = new Date().toISOString()
+          const rowData = [
+            timestamp,
+            body.firstName || '',
+            body.lastName || '',
+            body.email || '',
+            body.phone || '',
+            body.dateOfBirth || '',
+            body.address || '',
+            body.city || '',
+            body.state || '',
+            body.postalCode || '',
+            body.country || '',
+            
+            // Physical Attributes
+            body.height || '',
+            body.weight || '',
+            body.dominantFoot || '',
+            body.jerseySize || '',
+            body.shoeSize || '',
+            
+            // Football Information
+            body.position || '',
+            body.secondaryPosition || '',
+            body.experience || '',
+            body.currentClub || '',
+            body.previousClubs || '',
+            body.achievements || '',
+            body.playingStyle || '',
+            
+            // Health & Medical
+            body.bloodType || '',
+            body.allergies || '',
+            body.medicalConditions || '',
+            body.medications || '',
+            body.injuries || '',
+            body.emergencyContact || '',
+            body.emergencyPhone || '',
+            body.emergencyRelationship || '',
+            
+            // Parent/Guardian Information
+            body.parentName || '',
+            body.parentPhone || '',
+            body.parentEmail || '',
+            body.parentAddress || '',
+            
+            // Additional Information
+            body.education || '',
+            body.goals || '',
+            body.availability || '',
+            body.transportation || '',
+            body.preferredTrainingTime || '',
+            body.howDidYouHear || ''
+          ]
+
+          // Add row to Google Sheet
+          await sheet.addRow(rowData)
+          saved = true
+          storageMethod = 'Google Sheets'
+        }
+      } catch (error) {
+        console.error('Google Sheets error:', error)
+      }
+    }
+    
+    // Fallback to CSV if Google Sheets failed or not configured
+    if (!saved) {
+      saved = await saveToCSV(body)
+      storageMethod = 'CSV file'
+    }
+
+    if (!saved) {
+      return NextResponse.json(
+        { error: 'Failed to save registration data' },
+        { status: 500 }
+      )
+    }
 
     // Send confirmation email (you can implement this later)
     // For now, we'll just log it
     console.log('New registration:', {
       name: `${body.firstName} ${body.lastName}`,
       email: body.email,
-      timestamp
+      storageMethod,
+      timestamp: new Date().toISOString()
     })
 
     return NextResponse.json(
@@ -137,7 +251,8 @@ export async function POST(request: NextRequest) {
         message: 'Registration successful! We will contact you soon.',
         data: {
           name: `${body.firstName} ${body.lastName}`,
-          email: body.email
+          email: body.email,
+          storageMethod
         }
       },
       { status: 200 }
